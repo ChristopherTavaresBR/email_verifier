@@ -3,6 +3,7 @@ This project is a Flask-based web service designed to verify the availability of
 
 ## Structure
 
+```bash
 email_verifier/
 │
 ├── application/
@@ -20,6 +21,7 @@ email_verifier/
 │
 ├── main.py
 └── requirements.txt
+```
 
 ## Purpose
 The primary purpose of this service is to provide an API endpoint that allows users to check if a specific email address (username) is available for registration on Gmail. It automates the process of filling out Google's account creation form and checks for error messages indicating whether the email is already in use.
@@ -29,7 +31,7 @@ The primary purpose of this service is to provide an API endpoint that allows us
 ### Install Dependencies:
 Ensure you have Python installed, then install the required dependencies by running:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -37,7 +39,7 @@ pip install -r requirements.txt
 
 ### Start the Flask application by running:
 
-```
+```bash
 python main.py
 ```
 
@@ -45,14 +47,13 @@ python main.py
 
 Use the /verify-email endpoint to check if an email is available. For example:
 
-```
+```bash
 curl -X POST http://localhost:5000/google/verify-email -H "Content-Type: application/json" -d '{"email": "teste"}'
 ```
 
 The service will return a JSON response indicating whether the email is available:
 
-```
-json
+```json
 {
     "email": "teste",
     "available": false,
@@ -64,29 +65,30 @@ json
 
 To start the Selenium driver manually:
 
-```
+```bash
 curl -X POST http://localhost:5000/google/start-driver
 ```
 
 To stop the Selenium driver:
 
-```
+```bash
 curl -X POST http://localhost:5000/google/shutdown-driver
 ```
 
 ## Running in Production
+
 To deploy this service in a production environment, follow these steps:
 
 ### Use a Production WSGI Server:
 
 Replace Flask's built-in development server with a production-ready WSGI server like Gunicorn:
 
-```
+```bash
 pip install gunicorn
 ```
 
 run
-```
+```bash
 gunicorn -w 4 -b 0.0.0.0:5000 main:create_app()
 ```
 
@@ -100,7 +102,7 @@ Use a process manager like systemd (Linux) or Supervisor to ensure the service r
 
 Example systemd service file (/etc/systemd/system/email_verifier.service):
 
-```
+```bash
 [Unit]
 Description=Email Verification Service
 After=network.target
@@ -116,7 +118,7 @@ WantedBy=multi-user.target
 Enable and start the service:
 ```
 
-```
+```bash
 sudo systemctl enable email_verifier
 sudo systemctl start email_verifier
 ```
@@ -138,7 +140,7 @@ Endpoint: POST /google/verify-email
 
 Request Body:
 
-```
+```json
 {
     "email": "teste"
 }
@@ -146,7 +148,7 @@ Request Body:
 
 Response:
 
-```
+```json
 {
     "email": "teste",
     "available": false,
@@ -160,7 +162,7 @@ Endpoint: POST /google/start-driver
 
 Response:
 
-```
+```json
 {
     "message": "Driver started successfully"
 }
@@ -172,7 +174,7 @@ Endpoint: POST /google/shutdown-driver
 
 Response:
 
-```
+```json
 {
     "message": "Driver shut down successfully"
 }
