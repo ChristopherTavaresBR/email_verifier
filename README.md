@@ -6,21 +6,21 @@ This project is a Flask-based web service designed to verify the availability of
 ```bash
 email_verifier/
 │
-├── application/
-│   ├── __init__.py
-│   ├── base_verifier.py
-│   ├── driver_manager.py
-│   ├── queue_manager.py
-│   └── api_factory.py
+├── application/                  # Core application logic
+│   ├── __init__.py               # Initializes the application package
+│   ├── base_verifier.py          # Base class for email verification
+│   ├── driver_manager.py         # Manages the Selenium WebDriver
+│   ├── queue_manager.py          # Manages email and result queues
+│   └── api_factory.py            # Creates API blueprints
 │
-├── libs/
-|   google_gmail/
-│   ├── __init__.py
-│   ├── google_verifier.py
-│   └── conf.py
+├── libs/                         # External libraries and services
+│   └── google_gmail/             # Google Gmail-specific logic
+│       ├── __init__.py           # Initializes the Google Gmail package
+│       ├── google_verifier.py    # Implements Google Gmail verification
+│       └── conf.py               # Configuration for Google Gmail
 │
-├── main.py
-└── requirements.txt
+├── main.py                       # Entry point of the application
+└── requirements.txt              # List of dependencies
 ```
 
 ## Purpose
