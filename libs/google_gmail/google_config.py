@@ -1,4 +1,3 @@
-# google_config.py
 from dataclasses import dataclass
 from application.config_base import BaseConfig
 
