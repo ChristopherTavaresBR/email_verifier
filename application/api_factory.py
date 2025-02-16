@@ -10,12 +10,28 @@ import logging
 from application.driver_manager import EnhancedDriverManager
 
 def validate_email(email: str) -> bool:
-    """Validates email format"""
+    """
+    Validates the format of an email address.
+
+    Args:
+        email (str): The email address to validate.
+
+    Returns:
+        bool: True if the email format is valid, False otherwise.
+    """
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return bool(re.match(pattern, email))
 
 def error_handler(f: Callable) -> Callable:
-    """Decorator for consistent error handling"""
+    """
+    Decorator for consistent error handling in API endpoints.
+
+    Args:
+        f (Callable): The function to wrap with error handling.
+
+    Returns:
+        Callable: The wrapped function with error handling.
+    """
     @wraps(f)
     def wrapper(*args, **kwargs) -> Any:
         try:
@@ -34,12 +50,27 @@ class APIFactory:
         service_name: str,
         driver_manager: EnhancedDriverManager
     ) -> Blueprint:
-        """Creates a blueprint for email verification service"""
+        """
+        Creates a Flask Blueprint for an email verification service.
+
+        Args:
+            service_name (str): The name of the service.
+            driver_manager (EnhancedDriverManager): The driver manager instance.
+
+        Returns:
+            Blueprint: A Flask Blueprint with email verification endpoints.
+        """
         bp = Blueprint(service_name, __name__)
         
         @bp.route('/verify-email', methods=['POST'])
         @error_handler
         def verify_email():
+            """
+            Endpoint to verify an email address.
+
+            Returns:
+                JSON response with verification details or an error message.
+            """
             data = request.get_json()
             if not data or 'email' not in data:
                 return jsonify({
@@ -54,7 +85,7 @@ class APIFactory:
                     "timestamp": datetime.utcnow().isoformat()
                 }), 400
 
-            # Ensure driver is running
+            # Ensure the driver is running
             if not driver_manager.driver:
                 success = driver_manager.start_driver()
                 if not success:
@@ -65,8 +96,7 @@ class APIFactory:
 
             driver_manager.update_activity()
             
-            # Create verification request
-            #verification_id = str(uuid.uuid4())
+            # Create a verification request
             queues = driver_manager.queues
             queue_item = queues.add_verification(email)
             
@@ -79,6 +109,15 @@ class APIFactory:
         @bp.route('/verification-status/<verification_id>', methods=['GET'])
         @error_handler
         def get_verification_status(verification_id: str):
+            """
+            Endpoint to check the status of an email verification.
+
+            Args:
+                verification_id (str): The ID of the verification request.
+
+            Returns:
+                JSON response with verification status or an error message.
+            """
             queues = driver_manager.queues
             status = queues.get_verification_status(verification_id)
             
@@ -98,6 +137,12 @@ class APIFactory:
         @bp.route('/driver/status', methods=['GET'])
         @error_handler
         def get_driver_status():
+            """
+            Endpoint to check the status of the driver.
+
+            Returns:
+                JSON response with the driver's status and last activity time.
+            """
             return jsonify({
                 "status": "running" if driver_manager.driver else "stopped",
                 "last_activity": driver_manager.last_activity,
@@ -107,6 +152,12 @@ class APIFactory:
         @bp.route('/driver/start', methods=['POST'])
         @error_handler
         def start_driver():
+            """
+            Endpoint to start the driver.
+
+            Returns:
+                JSON response indicating success or failure.
+            """
             success = driver_manager.start_driver()
             return jsonify({
                 "success": success,
@@ -117,6 +168,12 @@ class APIFactory:
         @bp.route('/driver/stop', methods=['POST'])
         @error_handler
         def stop_driver():
+            """
+            Endpoint to stop the driver.
+
+            Returns:
+                JSON response indicating success or failure.
+            """
             success = driver_manager.shutdown_driver()
             return jsonify({
                 "success": success,
